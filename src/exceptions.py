@@ -17,10 +17,49 @@ def eprint(*args, **kwargs):
 #----------------------------
 
 # UserError: base class for a custom user error
-class UserError:
+class UserError(Exception):
     def __init__ (self, message):
+        self.message
+        super().__init__(self.message)
+
+    def __str__ (self):
+        return f"{self.message}"
+
+
+# ConfigParameterError: raising errors when configuration
+# parameters cannot be located in the ConfigurationHelper
+# class.
+class ConfigParameterError(UserError):
+    def __init__ (self, message, param):
+        self.param = param
+        super().__init__(message=message)
+
+    def __str__ (self):
+        return f"{self.param} -> {self.message}"
+
+
+
+# RuleConfigurationError: raising errors having to do with
+# accessing rule parameters
+class RuleConfigurationError(UserError):
+    def __init__ (self, message, rule, param):
+        self.rule = rule
+        self.param = param
         self.message = message
         super().__init__(self.message)
 
     def __str__ (self):
-        pass
+        return f"{self.rule}:{self.param} -> {self.message}"
+
+
+# GlobConfigurationError: raising errors having to do with
+# accessing global configuration parameters
+class GlobConfigurationError(UserError):
+    def __init__ (self, message, param):
+        self.param = param
+        self.message = message
+        super().__init__(self.message)
+
+    def __str__ (self):
+        return f"{self.param} -> {self.message}"
+
