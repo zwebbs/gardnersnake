@@ -22,8 +22,11 @@ class ConfigurationHelper:
             "processors_per_node"
         ]
 
-    def get_gobal_param(self, param):
-        pass
+    def get_gobal_param(self, param, ispath=False,
+                pathtype=None, exists=False):
+        glob_param = self.d[param]
+        if ispath: 
+            return get_verified_path(glob_param,pathtype,exists)
 
     def get_rule_param(self, rule, param, pathtype=None,
                        ispath=False, exists=False):
