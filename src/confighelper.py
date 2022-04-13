@@ -42,8 +42,8 @@ class ConfigurationHelper:
         # test default required keys
         for k in keys_to_check:
             outcome(k in cfg.keys())
-        
-        # verify validation codes 
+
+        # verify validation codes
         if not validation_codes[0]: # type check
             eprint(f"passed config: {cfg}")
             raise UserError("Could not validate configuration dictionary")
@@ -54,7 +54,6 @@ class ConfigurationHelper:
             raise ConfigParameterError(cfg, msg, keys_to_check)
         else:
             return 0
-        
 
     # define _get_global_param() internal method to return a top level
     # parameter from the passed configuration with optional path handling
@@ -98,24 +97,27 @@ class ConfigurationHelper:
                        pathtype=None, exists=False):
         return self._get_rule_param(rule, param, ispath, pathtype, exists)
 
-
-
-
-
-    # get_rule_resources()
-    # returns the standard resource set as a dictionary according
-    # to the internal resource list: self.resource_list
+    # define get_rule_resources(): returns the standard resource set
+    # as a dictionary according to the internal resource list-
+    # self.resource_list
     def get_rule_resources(self, rule, logdir="logs/", jobid=""):
         # build resource dictionary and return
-        resources = {r:self._get_rule_param(rule,r) for r in self.resource_list}
+        rule_spec = self.rule_params[rule]
         addendum = {"log_dir":logdir, "job_id":jobid}
+        resources = {}
         resources.update(addendum)
-        return resources
+
+        # build out the rest of the resources through a dictionary comp.
+        try:
+            rtrigger = None
+            for r in self.resource_list:
+                rtrigger = r
+                resources.update({r:rule_spec[r]})
+            return resources
+        except KeyError as ke:
+            msg = "Could not find resource of the indicated type"
+            crpe = ConfigRuleParameterError(rule_spec, msg, rtrigger, rule)
+            raise crpe from ke
 
 
-
-
-
-
-
-
+# EOF

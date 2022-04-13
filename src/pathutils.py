@@ -5,7 +5,7 @@
 
 # module imports
 from pathlib import Path
-from .exceptions import UserError, eprint
+from .exceptions import UserError
 
 # globals
 ACCEPTED_DTYPES = ["dir", "directory", "folder"]
@@ -16,24 +16,26 @@ ACCEPTED_TYPES = ["unknown", *ACCEPTED_DTYPES, *ACCEPTED_FTYPES]
 def get_verified_path(path, pathtype, strict=False):
     pobj = Path(path).expanduser().resolve() # generate a pathlib Path object
     exists = False # flag for whether or not the file or directory exists
-    method_err = "Error in pathutils.get_verified_path()"
 
     # handle the existence check depending on the type of path
-    if pathtype.lower() in ACCEPTED_DTYPES: exists = pobj.is_dir()
-    elif pathtype.lower() in ACCEPTED_FTYPES: exists = pobj.is_file()
-    elif pathtype.lower() in ACCEPTED_TYPES: exists = pobj.exists()
-    else:
-        eprint(f"Unknown path type for {path}")
-        eprint(f"Must be one of: {ACCEPTED_TYPES}")
-        eprint(f"Passed path type (pathtype=): {pathtype}")
-        raise UserError(method_err)
-
+    try:
+        if pathtype.lower() in ACCEPTED_DTYPES: exists = pobj.is_dir()
+        elif pathtype.lower() in ACCEPTED_FTYPES: exists = pobj.is_file()
+        elif pathtype.lower() in ACCEPTED_TYPES: exists = pobj.exists()
+        else:
+            msg1 = f"\nUnknown path type for {path}."
+            msg2 = f"\nMust be one of: {ACCEPTED_TYPES}"
+            msg3 = f"\nPassed path type (pathtype=): {pathtype}"
+            raise UserError("".join([msg1,msg2,msg3]))
+    except AttributeError as ae:
+        msg4 = "Please pass a string type to argument pathtype"
+        raise UserError(msg4) from ae
     # resolve the path object
-    if (exists and strict):
-        return pobj
-    elif (not strict): # always return the path object if not strict
-        return pobj
+    if (exists and strict): return pobj
+    elif (not strict): return pobj
     else:
-        eprint(f"exists: {exists}, strict: {strict}")
-        eprint(f"Unable to validate that {path} of type: {pathtype} exists.")
-        raise FileNotFoundError(method_err)
+        msg = f"\nUnable to validate that {path} of type: {pathtype} exists."
+        raise UserError(msg)
+
+
+# EOF
