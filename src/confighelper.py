@@ -23,7 +23,7 @@ class ConfigurationHelper:
         self.cfg = cfg_dict
         self._validate_config_dict(self.cfg)
         self.globs = self.cfg.copy()
-        self.rule_params = self.cfg.pop("rule_params")
+        self.rule_params = self.globs.pop("rule_params")
         self.resource_list = [
             "walltime","nodes",
             "processors_per_node"
@@ -40,21 +40,21 @@ class ConfigurationHelper:
         outcome(type(cfg) in [dict, OrderedDict])
 
         # test default required keys
-        try:
-            for k in keys_to_check:
-                outcome(k in cfg.keys())
-        except KeyError as keyexc:
-            msg1 = "Could not Validate Configuration in ConfiguationHelper."
-            mgs2 = "Please check the listed keys."
-            msg = "\n".join(msg1,msg2)
-            raise ConfigParameterError(cfg, msg, keys_to_check) from keyexc
-
-        # return 0 if the config is validated
-        if all(validation_codes):
-            return
-        else: # raise user error upon unsuccessful validation
+        for k in keys_to_check:
+            outcome(k in cfg.keys())
+        
+        # verify validation codes 
+        if not validation_codes[0]: # type check
             eprint(f"passed config: {cfg}")
             raise UserError("Could not validate configuration dictionary")
+        elif not all(validation_codes[1:]): # key checks
+            msg1 = "Could not Validate Configuration in ConfiguationHelper."
+            msg2 = "Please check the listed keys."
+            msg = "\n".join([msg1,msg2])
+            raise ConfigParameterError(cfg, msg, keys_to_check)
+        else:
+            return 0
+        
 
     # define _get_global_param() internal method to return a top level
     # parameter from the passed configuration with optional path handling
@@ -69,7 +69,7 @@ class ConfigurationHelper:
             raise perr from ke
         if not ispath: return gparam
         else:
-            return get_verified_path(gparam, pathtype, exists)
+            return str(get_verified_path(gparam, pathtype, exists))
 
     # define _get_rule_param() internal method to return a rule-level
     # parameter from the passed configuration with optional path handling
@@ -84,7 +84,7 @@ class ConfigurationHelper:
             raise rperr from ke
         if not ispath: return rparam
         else:
-            return get_verified_path(rparam, pathype, exists
+            return str(get_verified_path(rparam, pathtype, exists))
 
     # define get_global_param(): exposed wrapper for internal
     # method _get_global_param()

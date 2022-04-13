@@ -1,4 +1,6 @@
 {
+    "analysis_id": "test",
+    "workdir": "dir",
     "glob1": 100,
     "glob2": "~/Desktop/gardnersnake/",
     "rule_params": {
