@@ -8,9 +8,14 @@ from pathlib import Path
 from .exceptions import UserError
 
 # globals
+# -----------------------------------------------------------------------------
 ACCEPTED_DTYPES = ["dir", "directory", "folder"]
 ACCEPTED_FTYPES = ["file", "fp"]
 ACCEPTED_TYPES = ["unknown", *ACCEPTED_DTYPES, *ACCEPTED_FTYPES]
+
+
+# functions
+#------------------------------------------------------------------------------
 
 # define a function to return a verified, expanded path
 def get_verified_path(path, pathtype, strict=False):
@@ -36,6 +41,25 @@ def get_verified_path(path, pathtype, strict=False):
     else:
         msg = f"\nUnable to validate that {path} of type: {pathtype} exists."
         raise UserError(msg)
+
+
+# define verify_directory_contents() : a function to verify the existence
+# of a set of files inside of the passed directory to validate programs
+# which generate a large suite of outputs
+def verify_directory_contents(path, manifest=None, filelist=None):
+    # get and check directory path object, and file contents
+    dir_path = get_verified_path(path, pathtype="dir", strict=True)
+    dir_files = [f for f in dir_path.glob('**/*')]
+
+    # gather files which need to be present in the directory
+    files_to_check = []
+    if manifest: # overrides a passed file list.
+        with open(manifest, 'r') as fobj:
+            files_to_check.extend(fobj.read().split('\n'))
+    else:
+        files_to_check.extend(filelist)
+
+    # check for the files. 
 
 
 # EOF
