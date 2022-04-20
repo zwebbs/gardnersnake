@@ -9,7 +9,7 @@ import argparse
 from gardnersnake.pathutils import get_verified_path
 from gardnersnake.exceptions import UserError
 
-if __name__ == "__main__":
+def main():
     # setup CLI for the program
     descr = " validates dynamic directory contents against expectations"
     parser = argparse.ArgumentParser(description=descr, prog="check_directory")
