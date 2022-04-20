@@ -23,4 +23,7 @@ setuptools.setup(
     package_dir={"": "src"},
     packages=setuptools.find_packages(where="src"),
     python_requires=">=3.6",
+    entry_points={'console_scripts': {
+        'check_directory=src.check_directory:main'}
+    }
 )
