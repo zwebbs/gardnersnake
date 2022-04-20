@@ -47,5 +47,4 @@ def get_verified_path(path, pathtype, strict=False):
         msg = f"\nUnable to validate that {path} of type: {pathtype} exists."
         raise UserError(msg)
 
-
 # EOF
