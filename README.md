@@ -8,6 +8,11 @@ _Utilities for writing concise snakemake workflows_
 2. [Command Line Tools](#commandline_tools)
 
 ## <a name="class_objects"></a> Class Objects
+### gardnersnake.ConfigurationHelper()
+The foundational object defined in gardnersnake is the __ConfigurationHelper__ Class. At instantiation `ConfigurationHelper` takes a single argument, `cfg_dict`, 
+
+
+
 
 ## <a name="commandline_tools"> </a> Command Line Tools
 ### check_directory
