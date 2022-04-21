@@ -5,16 +5,34 @@ _Utilities for writing concise snakemake workflows_
 ## Table of Contents
 
 1. [Introduction](#introduction)
-2. [Class Objects](#class_objects)  
-3. [Command Line Tools](#commandline_tools)
+2. [Installation](#installation)
+3. [Class Objects](#class_objects)  
+4. [Command Line Tools](#commandline_tools)
 
 
-## <a name="introduction"></a> Introduction
+## <a name="introduction"></a> 1. Introduction
 [Snakemake](https://snakemake.readthedocs.io/en/stable/) is an incredibly powerful workflow manager that enables computational biologists to produce clear, reproducible, and modular analysis pipelines using a familiar Python-based grammar. 
 Unfortunately, the bioinformatics tools that we'd like to utilize inside of our Snakemake workflows are often a bit less well-behaved. 
 Gardnersnake is a small package built on the python standard library (Python 3.6) that aims to make handling this wide variety of tools easier and more compact, especially when working on cluster-based systems. 
 
-## <a name="class_objects"></a> Class Objects
+## <a name="installation"></a> 2. Installation
+
+Gardnersnake can be installed most conveniently via pip and the [Python Package Index](https://pypi.org/project/gardnersnake/) (PyPi). Please note that gardnersnake requires Python version 3.6 or later.
+
+```bash
+pip install gardnersnake
+```
+
+This repo can also be cloned, built and installed from source using its `setup.py` file.
+
+```bash
+git clone https://github.com/zwebbs/gardnersnake.git
+cd gardnersnake
+python -m build
+pip install dist/gardnersnake-*-py3*.whl
+```
+
+## <a name="class_objects"></a> 3. Class Objects
 ### gardnersnake.ConfigurationHelper()
 The foundational object defined in gardnersnake is the __ConfigurationHelper__ Class. At instantiation `ConfigurationHelper` takes a single argument, `cfg_dict`, which should be the `config` snakemake variable capturing the passed workflow configuration file. 
 
