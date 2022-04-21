@@ -68,7 +68,7 @@ class ConfigurationHelper:
             raise perr from ke
         if not ispath: return gparam
         else:
-            return str(get_verified_path(gparam, pathtype, exists))
+            return get_verified_path(gparam, pathtype, exists)
 
     # define _get_rule_param() internal method to return a rule-level
     # parameter from the passed configuration with optional path handling
@@ -79,23 +79,31 @@ class ConfigurationHelper:
         try: rparam = self.rule_params[rule][param]
         except KeyError as ke:
             msg = "Key Error"
-            rperr = ConfigRuleParameterError(self.rule_params,msg,param,rule)
+            rperr = ConfigRuleParameterError(self.rule_params, msg, param, rule)
             raise rperr from ke
         if not ispath: return rparam
         else:
-            return str(get_verified_path(rparam, pathtype, exists))
+            return get_verified_path(rparam, pathtype, exists)
 
     # define get_global_param(): exposed wrapper for internal
     # method _get_global_param()
-    def get_global_param(self, param, ispath=False,
-                         pathtype=None, exists=False):
-        return self._get_global_param(param, ispath, pathtype, exists)
+    def get_global_param(self, param, ispath=False, pathtype=None,
+                         exists=False, returnPath=False):
+        if returnPath:
+            return self._get_global_param(param, ispath, pathtype, exists)
+        else:
+            return str(self._get_global_param(param,
+                            ispath, pathtype, exists))
 
     # define get_rule_param(): exposed wrapper for internal
     # method _get_rule_param()
-    def get_rule_param(self, rule, param, ispath=False,
-                       pathtype=None, exists=False):
-        return self._get_rule_param(rule, param, ispath, pathtype, exists)
+    def get_rule_param(self, rule, param, ispath=False, pathtype=None,
+                       exists=False, returnPath=False):
+        if returnPath:
+            return self._get_rule_param(rule, param, ispath, pathtype, exists)
+        else:
+             return str(self._get_rule_param(rule, param,
+                                ispath, pathtype, exists))
 
     # define get_rule_resources(): returns the standard resource set
     # as a dictionary according to the internal resource list-
