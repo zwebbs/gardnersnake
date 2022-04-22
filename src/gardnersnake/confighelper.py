@@ -26,7 +26,8 @@ class ConfigurationHelper:
         self.rule_params = self.globs.pop("rule_params")
         self.resource_list = [
             "walltime","nodes",
-            "processors_per_node"
+            "processors_per_node",
+            "total_memory"
         ]
 
     # define _validate_config_dict() function to ensure minimum requirements
