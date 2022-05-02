@@ -19,7 +19,7 @@ Gardnersnake is a small package built on the python standard library that aims t
 
 ## <a name="requirements"></a> 2. Requirements
 
-The gardnersnake package requires Python >= 3.7.0. Additionally, gardnersnake depends on [jsonschema==4.4.0](https://pypi.org/project/jsonschema/#description).
+The gardnersnake package requires Python >= 3.7.0. Additionally, gardnersnake depends on [jsonschema 4.4.0](https://pypi.org/project/jsonschema/#description).
 
 ## <a name="installation"></a> 3. Installation
 
