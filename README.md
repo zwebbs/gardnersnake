@@ -2,24 +2,30 @@
 _Utilities for writing concise snakemake workflows_
 
 
-['3.7.0'][python_min]
+[3.7.0][python_min]
 
 ## Table of Contents
 
 1. [Introduction](#introduction)
-2. [Installation](#installation)
-3. [Class Objects](#class_objects)  
-4. [Command Line Tools](#commandline_tools)
+2. [Requirements](#requirements)
+3. [Installation](#installation)
+4. [Class Objects](#class_objects)  
+5. [Command Line Tools](#commandline_tools)
 
 
 ## <a name="introduction"></a> 1. Introduction
 [Snakemake](https://snakemake.readthedocs.io/en/stable/) is an incredibly powerful workflow manager that enables computational biologists to produce clear, reproducible, and modular analysis pipelines using a familiar Python-based grammar. 
 Unfortunately, the bioinformatics tools that we'd like to utilize inside of our Snakemake workflows are often a bit less well-behaved. 
-Gardnersnake is a small package built on the python standard library (Python [python min]) that aims to make handling this wide variety of tools easier and more compact, especially when working on cluster-based systems. 
+Gardnersnake is a small package built on the python standard library that aims to make handling this wide variety of tools easier and more compact, especially when working on cluster-based systems. 
 
-## <a name="installation"></a> 2. Installation
 
-Gardnersnake can be installed most conveniently via pip and the [Python Package Index](https://pypi.org/project/gardnersnake/) (PyPi). Please note that gardnersnake requires Python version [python min] or later.
+## <a name="requirements"></a> 2. Requirements
+
+The gardnersnake package requires Python >= 3.7.0. Additionally, gardnersnake depends on [jsonschema==4.4.0](https://pypi.org/project/jsonschema/#description).
+
+## <a name="installation"></a> 3. Installation
+
+Gardnersnake can be installed most conveniently via pip and the [Python Package Index](https://pypi.org/project/gardnersnake/) (PyPi). 
 
 ```bash
 pip install gardnersnake
@@ -34,14 +40,14 @@ python -m build
 pip install dist/gardnersnake-*-py3*.whl
 ```
 
-## <a name="class_objects"></a> 3. Class Objects
+## <a name="class_objects"></a> 4. Class Objects
 ### gardnersnake.ConfigurationHelper()
 The foundational object defined in gardnersnake is the __ConfigurationHelper__ Class. At instantiation `ConfigurationHelper` takes a single argument, `cfg_dict`, which should be the `config` snakemake variable capturing the passed workflow configuration file. 
 
 
 
 
-## <a name="commandline_tools"> </a> Command Line Tools
+## <a name="commandline_tools"> </a> 5. Command Line Tools
 ### check_directory
 
 Many bioinformatics tools produce directories of various structure with large numbers of output files. Rather than require Snakemake to keep track of these outputs as global outputs, the `check_directory` command-line utility validates output directories against a known set of files, and returns a small file containing a return code (0) if the directory of interest was successfully validated. `check_directory` throws an error and does not return the return code file if it is unable to validate the contents according to the given requirements.
