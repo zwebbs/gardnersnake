@@ -1,6 +1,6 @@
 # gardnersnake
 _Utilities for writing concise snakemake workflows_
-
+[python_min_version]: 3.7.0
 
 ## Table of Contents
 
@@ -17,7 +17,7 @@ Gardnersnake is a small package built on the python standard library (Python 3.6
 
 ## <a name="installation"></a> 2. Installation
 
-Gardnersnake can be installed most conveniently via pip and the [Python Package Index](https://pypi.org/project/gardnersnake/) (PyPi). Please note that gardnersnake requires Python version 3.6 or later.
+Gardnersnake can be installed most conveniently via pip and the [Python Package Index](https://pypi.org/project/gardnersnake/) (PyPi). Please note that gardnersnake requires Python version [python_min_version] or later.
 
 ```bash
 pip install gardnersnake
