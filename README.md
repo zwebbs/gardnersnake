@@ -2,8 +2,6 @@
 _Utilities for writing concise snakemake workflows_
 
 
-[3.7.0][python_min]
-
 ## Table of Contents
 
 1. [Introduction](#introduction)
