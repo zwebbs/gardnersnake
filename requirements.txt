@@ -1,6 +1,12 @@
 # File Name: requirements.txt
 # Created By: ZW
 # Created On: 2022-05-02
-# Purpose: details pip requirements for environment.
-gardnersnake>=0.1.6
+# Purpose: outlines dependencies for gardnersnake use
+attrs==21.4.0
+gardnersnake==0.1.7
+importlib-metadata==4.11.3
+importlib-resources==5.7.1
 jsonschema==4.4.0
+pyrsistent==0.18.1
+typing-extensions==4.2.0
+zipp==3.8.0
