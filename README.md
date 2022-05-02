@@ -2,6 +2,8 @@
 _Utilities for writing concise snakemake workflows_
 
 
+['3.7.0'][python_min]
+
 ## Table of Contents
 
 1. [Introduction](#introduction)
@@ -82,6 +84,3 @@ which should return a file called _rc.out_ if the folder _~/myanalysis/outputs/_
 
 
 
-
-
-[python min]: '3.7.0'
