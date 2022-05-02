@@ -6,11 +6,11 @@
 
 # module imports
 from collections import OrderedDict
-from .pathutils import get_verified_path
-from .exceptions import eprint
-from .exceptions import UserError
-from .exceptions import ConfigParameterError
-from .exceptions import ConfigRuleParameterError
+from ..misc.pathutils import get_verified_path
+from ..misc.exceptions import eprint
+from ..misc.exceptions import UserError
+from ..misc.exceptions import ConfigParameterError
+from ..misc.exceptions import ConfigRuleParameterError
 
 # class definitions
 #------------------------------------------------------------------------------
