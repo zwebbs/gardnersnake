@@ -4,6 +4,5 @@
 # Purpose: enables module imports from src/gardnersnake directory
 
 # specific package imports 
-from .config.confighelper import ConfigurationHelper
 
-#
+# EOF
