@@ -13,11 +13,11 @@ _Utilities for writing concise snakemake workflows_
 ## <a name="introduction"></a> 1. Introduction
 [Snakemake](https://snakemake.readthedocs.io/en/stable/) is an incredibly powerful workflow manager that enables computational biologists to produce clear, reproducible, and modular analysis pipelines using a familiar Python-based grammar. 
 Unfortunately, the bioinformatics tools that we'd like to utilize inside of our Snakemake workflows are often a bit less well-behaved. 
-Gardnersnake is a small package built on the python standard library (Python [python_min]) that aims to make handling this wide variety of tools easier and more compact, especially when working on cluster-based systems. 
+Gardnersnake is a small package built on the python standard library (Python [python min]) that aims to make handling this wide variety of tools easier and more compact, especially when working on cluster-based systems. 
 
 ## <a name="installation"></a> 2. Installation
 
-Gardnersnake can be installed most conveniently via pip and the [Python Package Index](https://pypi.org/project/gardnersnake/) (PyPi). Please note that gardnersnake requires Python version [python_min] or later.
+Gardnersnake can be installed most conveniently via pip and the [Python Package Index](https://pypi.org/project/gardnersnake/) (PyPi). Please note that gardnersnake requires Python version [python min] or later.
 
 ```bash
 pip install gardnersnake
@@ -84,4 +84,4 @@ which should return a file called _rc.out_ if the folder _~/myanalysis/outputs/_
 
 
 
-[python_min]: '3.7.0'
+[python min]: '3.7.0'
