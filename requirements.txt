@@ -1,0 +1,6 @@
+# File Name: requirements.txt
+# Created By: ZW
+# Created On: 2022-05-02
+# Purpose: details pip requirements for environment.
+gardnersnake>=0.1.6
+jsonschema==4.4.0
