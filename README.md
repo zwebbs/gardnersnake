@@ -1,5 +1,6 @@
 # gardnersnake
 _Utilities for writing concise snakemake workflows_
+
 [python_min_version]: 3.7.0
 
 ## Table of Contents
