@@ -89,22 +89,23 @@ class ConfigurationHelper:
     # define get_global_param(): exposed wrapper for internal
     # method _get_global_param()
     def get_global_param(self, param, ispath=False, pathtype=None,
-                         exists=False, returnPath=False):
-        if returnPath:
-            return self._get_global_param(param, ispath, pathtype, exists)
+                            exists=False, returnPath=False):
+        gp = self._get_global_param(param, ispath, pathtype, exists)
+        if ((ispath) and (not returnPath)):
+            return str(gp)
         else:
-            return str(self._get_global_param(param,
-                            ispath, pathtype, exists))
+            return gp
 
     # define get_rule_param(): exposed wrapper for internal
     # method _get_rule_param()
     def get_rule_param(self, rule, param, ispath=False, pathtype=None,
                        exists=False, returnPath=False):
-        if returnPath:
-            return self._get_rule_param(rule, param, ispath, pathtype, exists)
+
+        rp = self._get_rule_param(rule, param, ispath, pathtype, exists)
+        if ((ispath) and (not returnPath)):
+            return str(rp)
         else:
-             return str(self._get_rule_param(rule, param,
-                                ispath, pathtype, exists))
+            return rp
 
     # define get_rule_resources(): returns the standard resource set
     # as a dictionary according to the internal resource list-
