@@ -1,0 +1,21 @@
+---
+# File Name: gs_config.yaml
+# Created By: ZW
+# Created On: 2022-05-03
+# Purpose: configures gardnersnake-snakemake workflows
+
+# first yaml doc contains schema for generic workflow configurations
+analysis_id: 'my-analysis'
+workdir: 'here'
+rule_params:
+  - {
+    rule_name: 'ruleA',
+    walltime: '05:00:00',
+    nodes: 1,
+    processors_per_node: '6',
+    total_memory: 2000,
+    extra_bits: 'random'
+  }
+
+---
+# second yaml doc contains schema for metadata (sequencing files, etc.)

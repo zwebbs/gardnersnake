@@ -44,6 +44,19 @@ class UserError(Exception):
         self._eprint(self.__str__())
 
 
+# YAMLValidationError: exception class raised when we cannot validate
+# configuration or metadata inputs from provided schemas
+class YAMLValidationError(UserError):
+    def __init__ (self, name, message, *args, **kw):
+        super(YAMLValidationError, self).__init__(message, *args, **kw)
+        self.name = name
+
+    def __str__(self):
+        self._eprint(f"Error in validation of YAML data for: {self.name}")
+        return self.message
+
+
+
 # ConfigParameterError: raising errors when configuration
 # parameters cannot be located in the ConfigurationHelper
 # class.
