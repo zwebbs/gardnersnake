@@ -6,11 +6,19 @@
 
 # module imports
 from collections import OrderedDict
+from .schemas import SchemaMap
+import .yamlparser as yamlparser
 from ..misc.pathutils import get_verified_path
 from ..misc.exceptions import eprint
 from ..misc.exceptions import UserError
 from ..misc.exceptions import ConfigParameterError
 from ..misc.exceptions import ConfigRuleParameterError
+
+
+# function defintions
+#------------------------------------------------------------------------------
+
+
 
 # class definitions
 #------------------------------------------------------------------------------
@@ -19,42 +27,14 @@ from ..misc.exceptions import ConfigRuleParameterError
 # cleans up much of the code linking run
 # conifgurations to snakefile rules.
 class ConfigurationHelper:
-    def __init__ (self, cfg_dict):
-        self.cfg = cfg_dict
-        self._validate_config_dict(self.cfg)
+    def __init__ (self, cfg_dict, schema_type, schema_map=SchemaMap()):
+        self.cfg = yamlparser.get_validated_from_schema(
+            target_dict=cfg_dict,
+            schema=schema_map.get_schema(schema_type),
+            name="config"
+        )
         self.globs = self.cfg.copy()
         self.rule_params = self.globs.pop("rule_params")
-        self.resource_list = [
-            "walltime","nodes",
-            "processors_per_node",
-            "total_memory"
-        ]
-
-    # define _validate_config_dict() function to ensure minimum requirements
-    # for the passed configuration dict --including type checking the dict
-    def _validate_config_dict(self,cfg):
-        validation_codes = []
-        keys_to_check = ["analysis_id", "workdir", "rule_params"]
-        outcome = lambda x: validation_codes.append(x)
-
-        # test the type of the passed dict
-        outcome(type(cfg) in [dict, OrderedDict])
-
-        # test default required keys
-        for k in keys_to_check:
-            outcome(k in cfg.keys())
-
-        # verify validation codes
-        if not validation_codes[0]: # type check
-            eprint(f"passed config: {cfg}")
-            raise UserError("Could not validate configuration dictionary")
-        elif not all(validation_codes[1:]): # key checks
-            msg1 = "Could not Validate Configuration in ConfiguationHelper."
-            msg2 = "Please check the listed keys."
-            msg = "\n".join([msg1,msg2])
-            raise ConfigParameterError(cfg, msg, keys_to_check)
-        else:
-            return 0
 
     # define _get_global_param() internal method to return a top level
     # parameter from the passed configuration with optional path handling

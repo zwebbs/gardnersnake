@@ -36,16 +36,30 @@ CFG_SCHEMA_GARDNER_BASIC = {
                 "type": "object",
                 "properties": {
                     "rule_name": {"type": "string"},
-                    "walltime": {"type": "string"},
-                    "nodes": {"type": "number"},
-                    "processors_per_node": {"type": "number"},
-                    "total_memory": {"type": "number"}
+                    "resources": {
+                        "type":"object",
+                        "properties": {
+                            "walltime": {"type": "string"},
+                            "nodes": {"type": "number"},
+                            "processors_per_node": {"type": "number"},
+                            "total_memory": {"type": "number"},
+                            "log_dir": {"type":"string"},
+                            "job_id": {"type": "string"}
+                        },
+                        "additionalProperties": False,
+                        "required": [
+                            "walltime", "nodes", "processors_per_node",
+                            "total_memory", "log_dir", "job_id"
+                        ]
+                    },
+                    "parameters": {
+                        "type": "object",
+                        "properties": {},
+                        "additionalProperties": True
+                    },
                 },
                 "additionalProperties": True,
-                "required": [
-                    "rule_name", "walltime", "nodes",
-                    "processors_per_node", "total_memory"
-                ]
+                "required": ["rule_name", "resources"]
             }
         }
     },

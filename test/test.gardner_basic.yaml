@@ -10,11 +10,15 @@ workdir: 'here'
 rule_params:
   - {
     rule_name: 'ruleA',
-    walltime: '05:00:00',
-    nodes: 1,
-    processors_per_node: '6',
-    total_memory: 2000,
-    extra_bits: 'random'
+    resources: {
+      walltime: 'hh:mm:ss',
+      nodes: 0,
+      processors_per_node: 0,
+      total_memory: 0,
+      log_dir: 'logs/',
+      job_id: ''
+    },
+    parameters: {}
   }
 
 ---
