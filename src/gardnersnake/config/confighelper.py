@@ -60,7 +60,10 @@ class ConfigurationHelper:
     def get_rule(self, rule_name):
         return self._get_rule(rule_name)
 
-
+    # define get_glob() external method to produce globally defined
+    # configuration elements like workdir and analysis_id
+    def get_glob(self, glob):
+        return self.cfg[glob]
 
 
 
