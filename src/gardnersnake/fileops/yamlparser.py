@@ -7,7 +7,9 @@
 # module imports
 #------------------------------------------------------------------------------
 from pprint import PrettyPrinter
+from .pathutils import get_verified_path
 from ..misc.exceptions import YAMLValidationError
+
 from jsonschema import validate, ValidationError
 import yaml
 
@@ -16,8 +18,9 @@ import yaml
 # define read_yaml_config(): a function which takes a file path string as input
 # and returns a list of dictionaries the first of which is the workflow
 # configuration and the second of which is the metadata for the data inputs
-def read_yaml_config(filename):
-    with open(filename, 'r') as fh:
+def read_yaml_extended_config(filename):
+    yamlpath = get_verified_path(filename, pathtype='file', strict=True)
+    with open(yamlpath, 'r') as fh:
         rawdat = fh.read()
         yml_data = yaml.safe_load_all(rawdat)
     return [next(yml_data), next(yml_data)]
@@ -44,6 +47,4 @@ def get_validated_from_schema(target_dict, schema, name, quietly=False):
         """
         raise YAMLValidationError(name,msg) from verr
 
-
-
-
+# EOF

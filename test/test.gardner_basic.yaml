@@ -18,8 +18,32 @@ rule_params:
       log_dir: 'logs/',
       job_id: ''
     },
-    parameters: {}
+    parameters: {
+      param_static_1: "a",
+      param_static_2: "b"
+    }
   }
+  - {
+    rule_name: 'ruleB',
+    resources: {
+      walltime: '05:30:01',
+      nodes: 1,
+      processors_per_node: 6,
+      total_memory: 2000,
+      log_dir: 'logs/',
+      job_id: ''
+    },
+    parameters: {
+      param_static_1: "c",
+      param_static_2: 4
+    }
+  }
+
 
 ---
 # second yaml doc contains schema for metadata (sequencing files, etc.)
+metadata:
+  - file1: "string/path"
+  - file2: "string/path"
+
+# EOF

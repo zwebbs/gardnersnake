@@ -89,7 +89,4 @@ class SchemaMap:
     def get_schema(self, schema_type=None):
         return self.schema_map[schema_type]
 
-
-
-
-
+# EOF

@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="gardnersnake",
-    version="0.1.7",
+    version="0.2.0",
     author="Zach Weber",
     author_email="zach.weber.813@gmail.com",
     description="Utilities for writing concise snakemake workflows",

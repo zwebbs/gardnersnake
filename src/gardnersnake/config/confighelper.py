@@ -5,37 +5,79 @@
 #  snakemake worflows easier to construct
 
 # module imports
-from collections import OrderedDict
+from operator import itemgetter
 from .schemas import SchemaMap
-import .yamlparser as yamlparser
-from ..misc.pathutils import get_verified_path
-from ..misc.exceptions import eprint
-from ..misc.exceptions import UserError
-from ..misc.exceptions import ConfigParameterError
-from ..misc.exceptions import ConfigRuleParameterError
-
+from ..fileops.yamlparser import get_validated_from_schema
 
 # function defintions
 #------------------------------------------------------------------------------
 
-
-
 # class definitions
 #------------------------------------------------------------------------------
 
-# class ConfigurationHelper: object which
-# cleans up much of the code linking run
-# conifgurations to snakefile rules.
+# class ConfigurationHelper: object which cleans up much of the code
+# linking run conifgurations to snakefile. requires a specificly formatted
+# yaml configuration which is described in a schema indicated by
+# schema type. for more details please visit config/schemas.py
 class ConfigurationHelper:
     def __init__ (self, cfg_dict, schema_type, schema_map=SchemaMap()):
-        self.cfg = yamlparser.get_validated_from_schema(
+        # load the configuration and validate it
+        self.cfg = get_validated_from_schema(
             target_dict=cfg_dict,
             schema=schema_map.get_schema(schema_type),
-            name="config"
+            name="Workflow Configuration"
         )
-        self.globs = self.cfg.copy()
-        self.rule_params = self.globs.pop("rule_params")
 
+        # useful operators to use in methods. these attributes are themselves
+        # methods but easier and more consise to define here
+        self._name_getter = itemgetter("rule_name")
+        self._resources_getter = itemgetter("resources")
+        self._parameters_getter = itemgetter("parameters")
+
+        # attributes of the rule set held in the configuration
+        self.rule_params = self.cfg['rule_params'] # list of rule objects
+        self.rule_names = [self._name_getter(r) for r in self.rule_params]
+
+    # define _get_rule() internal method which retrieves a rule by name from
+    # the list of rules using a simple .index search of the rule names list
+    def _get_rule(self, rule_name):
+        idx = self.rule_names.index(rule_name)
+        return self.rule_params[idx]
+
+    # define get_resources() external method for returning the resource
+    # dictionary for a particular passed rule
+    def get_resources(self, rule_name):
+        return self._resources_getter(self._get_rule(rule_name))
+
+    # define get_parameters() external method for returning the parameter
+    # dictionary for a partiuclar passed rule
+    def get_parameters(self, rule_name):
+        return self._parameters_getter(self._get_rule(rule_name))
+
+    # define get_rule() external method which aliases the _get_rule()
+    # internal methods for various edge case uses. most of the time
+    # this should be unnecessary. return type is a dict
+    def get_rule(self, rule_name):
+        return self._get_rule(rule_name)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def get_static_params():
+        return self._get("parameters")
     # define _get_global_param() internal method to return a top level
     # parameter from the passed configuration with optional path handling
     def _get_global_param(self, param, ispath=False,

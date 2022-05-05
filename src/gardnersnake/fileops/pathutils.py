@@ -5,7 +5,7 @@
 
 # module imports
 from pathlib import Path
-from .exceptions import UserError
+from ..misc.exceptions import UserError
 
 # globals
 # -----------------------------------------------------------------------------

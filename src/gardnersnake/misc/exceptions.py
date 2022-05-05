@@ -55,36 +55,4 @@ class YAMLValidationError(UserError):
         self._eprint(f"Error in validation of YAML data for: {self.name}")
         return self.message
 
-
-
-# ConfigParameterError: raising errors when configuration
-# parameters cannot be located in the ConfigurationHelper
-# class.
-class ConfigParameterError(UserError):
-    def __init__ (self, cfg, message, param, *args, **kw):
-        super(ConfigParameterError, self).__init__(message, *args, **kw)
-        self.cfg = cfg # stores internal representation of config
-        self.param = param # parameter that raised the error
-
-    def __str__ (self):
-        self._eprint("\nError in the following portion of the configuration..")
-        self._edictprint(self.cfg, indent=2)
-        return f"Param --> {self.param}. {self.message}"
-
-
-# RuleConfigurationError: raising errors having to do with
-# accessing rule parameters
-class ConfigRuleParameterError(ConfigParameterError):
-    def __init__ (self, cfg, message, param, rule, *args, **kw):
-        super(ConfigRuleParameterError, self).__init__(
-            cfg, message, param, *args, **kw
-        )
-        self.rule = rule
-
-    def __str__ (self):
-        self._eprint("\nError in the following portion of the configuration..")
-        self._edictprint(self.cfg, indent=2)
-        return f"Rule --> {self.rule}, Param --> {self.param}. {self.message}"
-
-#------------------------------------------------------------------------------
-#EOF
+# EOF

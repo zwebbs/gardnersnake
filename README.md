@@ -7,7 +7,7 @@ _Utilities for writing concise snakemake workflows_
 1. [Introduction](#introduction)
 2. [Requirements](#requirements)
 3. [Installation](#installation)
-4. [Class Objects](#class_objects)  
+4. [Class Objects](#class_objects)
 5. [Command Line Tools](#commandline_tools)
 
 
@@ -19,7 +19,8 @@ Gardnersnake is a small package built on the python standard library that aims t
 
 ## <a name="requirements"></a> 2. Requirements
 
-The gardnersnake package requires Python >= 3.7.0. Additionally, gardnersnake depends on [jsonschema 4.4.0](https://pypi.org/project/jsonschema/#description).
+The gardnersnake package requires Python >= 3.7.0. Additionally, gardnersnake depends on [jsonschema 4.4.0](https://pypi.org/project/jsonschema/#description). and [pyyaml 6.0](https://pypi.org/project/PyYAML/#description)
+
 
 ## <a name="installation"></a> 3. Installation
 
@@ -29,7 +30,7 @@ Gardnersnake can be installed most conveniently via pip and the [Python Package 
 pip install gardnersnake
 ```
 
-This repo can also be cloned, built and installed from source using its `setup.py` file.
+This repo can also be cloned, built and installed from source using its `setup.py` file. A separate requirements.txt file is provided for building compatible environments using ```venv```
 
 ```bash
 git clone https://github.com/zwebbs/gardnersnake.git
@@ -40,9 +41,15 @@ pip install dist/gardnersnake-*-py3*.whl
 
 ## <a name="class_objects"></a> 4. Class Objects
 ### gardnersnake.ConfigurationHelper()
-The foundational object defined in gardnersnake is the __ConfigurationHelper__ Class. At instantiation `ConfigurationHelper` takes a single argument, `cfg_dict`, which should be the `config` snakemake variable capturing the passed workflow configuration file. 
+One of the two foundational objects defined in gardnersnake is the __ConfigurationHelper__ Class. At instantiation `ConfigurationHelper` takes two arguments, first a `cfg_dict`, representing the workflow configuration; second, a ```schema_type``` specifying which JSON schema pattern to validate the workflow configuration against (More about schemas below). Passing ```None``` to schema_type aborts validation alltogether but may result in unintened errors downstream when ConfigurationHelper looks for expected attributes.   
+
+### gardnersnake.DataManager()
 
 
+### The gardnersnake extended configuration
+
+
+### Example: Working with the extended configuration in Snakemake
 
 
 ## <a name="commandline_tools"> </a> 5. Command Line Tools

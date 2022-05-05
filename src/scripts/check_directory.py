@@ -6,8 +6,8 @@
 
 # module imports
 import argparse
-from gardnersnake.pathutils import get_verified_path
-from gardnersnake.exceptions import UserError
+from gardnersnake.fileops import get_verified_path
+from gardnersnake.misc.exceptions import UserError
 
 def main():
     # setup CLI for the program
