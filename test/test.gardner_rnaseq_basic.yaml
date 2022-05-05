@@ -1,0 +1,72 @@
+---
+# File Name: test.gardnersnake_rnaseq_basic.yaml
+# Created By: ZW
+# Created On: 2022-05-03
+# Purpose: dummy gardner extended configuration for rnaseq workflow
+
+# first yaml doc contains schema for generic workflow configurations
+analysis_id: "test-gardner-rnaseq"
+workdir: '.'
+rule_params:
+  - {
+    rule_name: "Verify_Index_Contents",
+    resources: {
+      walltime: "00:10:00",
+      nodes: 1,
+      processors_per_node: 1,
+      total_memory: 2000,
+      log_dir: "logs/",
+      job_id: ''
+    },
+    parameters: {
+      genome_index_manifest: [
+        "Genome", "chrLength.txt", "exonGeTrInfo.tab", "sjdbInfo.txt",
+        "Log.out", "chrName.txt", "exonInfo.tab", "sjdbList.fromGTF.out.tab",
+        "SA","chrNameLength.txt","geneInfo.tab", "sjdbList.out.tab",
+        "SAindex", "chrStart.txt", "genomeParameters.txt", "transcriptInfo.tab"
+      ]
+    }
+  }
+
+---
+# second yaml doc contains schema for metadata (sequencing files, etc.)
+dynamic_metadata:
+  libraries:
+    - {
+      library_name: cardio-1
+      runs:
+        - {
+          sample_name: "ERR2365244",
+          fastq1: "ERR2365244.fastq.gz"
+        }
+    }
+    - {
+    library_name: cardio-2
+    runs:
+      - {
+        sample_name: "ERR2365245",
+        fastq1: "ERR2365245.fastq.gz"
+      }
+    }
+    - {
+    library_name: cardio-1
+    runs:
+      - {
+        sample_name: "ERR2365244",
+        fastq1: "ERR2365244.fastq.gz"
+      }
+    }
+
+
+
+  - file1: "string/path"
+  - file2: "string/path"
+static_metadata:
+  rule_inputs:
+    - {
+
+    }
+
+
+
+# EOF
