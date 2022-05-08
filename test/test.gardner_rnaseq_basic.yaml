@@ -30,27 +30,45 @@ rule_params:
 
 ---
 # second yaml doc contains schema for metadata (sequencing files, etc.)
-dynamic_metadata:
-  libraries:
-    - {library_name: "cardio-1",
-       runs:
-         - {sample_name: "ERR2365244",
-            fastq1: "ERR2365244.fastq.gz",
-            fastq2: null}}
-    - {library_name: "cardio-2",
-      runs:
-        - {sample_name: "ERR2365245"
-           fastq1: "ERR2365245.fastq.gz"
-           fastq2: null}}
-    - {library_name: "cardio-3",
-       runs:
-        - {sample_name: "ERR2365246",
-           fastq1: "ERR2365246.fastq.gz",
-           fastq2: null}}
+shared_data:
+  libraries: [
+    {
+      library_name: "cardio-1",
+      runs: [
+        {
+          run_name: "ERR2365244",
+          fastq1: "ERR2365244.fastq.gz",
+          fastq2: null
+        }
+      ]
+    },
+    {
+      library_name: "cardio-2",
+      runs: [
+        {
+          run_name: "ERR2365245",
+          fastq1: "ERR2365245.fastq.gz",
+          fastq2: null
+        }
+      ]
+    },
+    {
+      library_name: "cardio-3",
+      runs: [
+        {
+          run_name: "ERR2365246",
+          fastq1: "ERR2365246.fastq.gz",
+          fastq2: null
+        }
+      ]
+    }
+  ]
+rule_data: [
+  {
+    rule_name: "Verify_Index_Contents"
+  },
+  {
+    rule_name: "STAR_Create_Genome_Index"
+  }
+]
 
-static_metadata:
-  rule_data:
-    - {rule_name: "Verify_Index_Contents"}
-    - {rule_name: "STAR_Create_Genome_Index"}
-
-# EOF

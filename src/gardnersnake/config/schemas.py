@@ -6,12 +6,12 @@
 #    ease of use.
 
 # module imports
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 from collections import defaultdict
 
 
-# Schema Definitions
-#------------------------------------------------------------------------------
+# schema definitions
+# -----------------------------------------------------------------------------
 
 # define a universally permissive configuration schema
 CFG_SCHEMA_DEFAULT = {
@@ -25,7 +25,7 @@ CFG_SCHEMA_DEFAULT = {
 # define a basic gardner configuration schema
 CFG_SCHEMA_GARDNER_BASIC = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "description": "minimum requirements for workflow cfgs run on gardner",
+    "description": "minimum requirements for workflow configs run on gardner",
     "type": "object",
     "properties": {
         "analysis_id": {"type": "string"},
@@ -37,13 +37,13 @@ CFG_SCHEMA_GARDNER_BASIC = {
                 "properties": {
                     "rule_name": {"type": "string"},
                     "resources": {
-                        "type":"object",
+                        "type": "object",
                         "properties": {
                             "walltime": {"type": "string"},
                             "nodes": {"type": "number"},
                             "processors_per_node": {"type": "number"},
                             "total_memory": {"type": "number"},
-                            "log_dir": {"type":"string"},
+                            "log_dir": {"type": "string"},
                             "job_id": {"type": "string"}
                         },
                         "additionalProperties": False,
@@ -68,18 +68,20 @@ CFG_SCHEMA_GARDNER_BASIC = {
 }
 
 
-# Mapping Class Definition
-#------------------------------------------------------------------------------
+# class definitions
+# -----------------------------------------------------------------------------
+
 
 # define a helper function to return the universally permissive schema
 # in a default dict
 def get_universal_schema():
     return CFG_SCHEMA_DEFAULT
 
+
 # define SchemaMap, a class containing the above defined schemas
 # for ease of access in snakemake workflows with gardnersnake.
 class SchemaMap:
-    def __init__ (self):
+    def __init__(self):
         self.schema_map = defaultdict(get_universal_schema)
         self.schema_map.update({
             "CFG_DEFAULT": CFG_SCHEMA_DEFAULT,
@@ -88,5 +90,3 @@ class SchemaMap:
 
     def get_schema(self, schema_type=None):
         return self.schema_map[schema_type]
-
-# EOF
