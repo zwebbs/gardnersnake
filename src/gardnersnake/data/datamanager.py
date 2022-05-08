@@ -8,12 +8,20 @@
 # module imports
 #------------------------------------------------------------------------------
 from .schemas import SchemaMap
-
+from ..fileops.
 
 # class definitions
 #------------------------------------------------------------------------------
 
+
+
+
+
+
 class DataManager:
     def __init__ (self, metadata, schema_type, schema_map=sm.SchemaMap()):
-        pass
+        self.metadata = get_validated_from_schema(
+            target_dict=metadata,
+            schema=schema_map.get_schema(schema_type),
+            name="Workflow Metadata", quietly=False)
 

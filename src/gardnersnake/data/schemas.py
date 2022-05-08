@@ -13,7 +13,7 @@ from collections import defaultdict
 # schema definitions
 #------------------------------------------------------------------------------
 
-# define a universally permissive configuration schema
+# define a universally permissive metadata schema
 META_SCHEMA_DEFAULT = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "description": "permissive schema for any metadata structure, for dev",
@@ -21,6 +21,16 @@ META_SCHEMA_DEFAULT = {
     "properties": {},
     "additionalProperties": True
 }
+
+# define a basic metadata schema for basic sequencing-based workflows
+META_SCHEMA_GARDNER_SEQ_BASIC = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "description": "basic schema for basic sequencing workflow metadata",
+    "type": "object",
+    "properties": {},
+    "additionalProperties": True
+}
+
 # mapping class definition
 #------------------------------------------------------------------------------
 

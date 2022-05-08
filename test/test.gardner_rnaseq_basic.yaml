@@ -22,7 +22,7 @@ rule_params:
       genome_index_manifest: [
         "Genome", "chrLength.txt", "exonGeTrInfo.tab", "sjdbInfo.txt",
         "Log.out", "chrName.txt", "exonInfo.tab", "sjdbList.fromGTF.out.tab",
-        "SA","chrNameLength.txt","geneInfo.tab", "sjdbList.out.tab",
+        "SA", "chrNameLength.txt", "geneInfo.tab", "sjdbList.out.tab",
         "SAindex", "chrStart.txt", "genomeParameters.txt", "transcriptInfo.tab"
       ]
     }
@@ -32,41 +32,25 @@ rule_params:
 # second yaml doc contains schema for metadata (sequencing files, etc.)
 dynamic_metadata:
   libraries:
-    - {
-      library_name: cardio-1
+    - {library_name: "cardio-1",
+       runs:
+         - {sample_name: "ERR2365244",
+            fastq1: "ERR2365244.fastq.gz",
+            fastq2: null}}
+    - {library_name: "cardio-2",
       runs:
-        - {
-          sample_name: "ERR2365244",
-          fastq1: "ERR2365244.fastq.gz"
-        }
-    }
-    - {
-    library_name: cardio-2
-    runs:
-      - {
-        sample_name: "ERR2365245",
-        fastq1: "ERR2365245.fastq.gz"
-      }
-    }
-    - {
-    library_name: cardio-1
-    runs:
-      - {
-        sample_name: "ERR2365244",
-        fastq1: "ERR2365244.fastq.gz"
-      }
-    }
+        - {sample_name: "ERR2365245"
+           fastq1: "ERR2365245.fastq.gz"
+           fastq2: null}}
+    - {library_name: "cardio-3",
+       runs:
+        - {sample_name: "ERR2365246",
+           fastq1: "ERR2365246.fastq.gz",
+           fastq2: null}}
 
-
-
-  - file1: "string/path"
-  - file2: "string/path"
 static_metadata:
-  rule_inputs:
-    - {
-
-    }
-
-
+  rule_data:
+    - {rule_name: "Verify_Index_Contents"}
+    - {rule_name: "STAR_Create_Genome_Index"}
 
 # EOF
