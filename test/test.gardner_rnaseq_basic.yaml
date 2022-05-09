@@ -65,7 +65,10 @@ shared_data:
   ]
 rule_data: [
   {
-    rule_name: "Verify_Index_Contents"
+    rule_name: "Verify_Index_Contents",
+    inputs: {
+      genome_index_dir: "/path/to/directory"
+    }
   },
   {
     rule_name: "STAR_Create_Genome_Index"

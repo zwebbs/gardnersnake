@@ -71,18 +71,11 @@ CFG_SCHEMA_GARDNER_BASIC = {
 # class definitions
 # -----------------------------------------------------------------------------
 
-
-# define a helper function to return the universally permissive schema
-# in a default dict
-def get_universal_schema():
-    return CFG_SCHEMA_DEFAULT
-
-
 # define SchemaMap, a class containing the above defined schemas
 # for ease of access in snakemake workflows with gardnersnake.
 class SchemaMap:
     def __init__(self):
-        self.schema_map = defaultdict(get_universal_schema)
+        self.schema_map = dict()
         self.schema_map.update({
             "CFG_DEFAULT": CFG_SCHEMA_DEFAULT,
             "CFG_GARDNER_BASIC": CFG_SCHEMA_GARDNER_BASIC

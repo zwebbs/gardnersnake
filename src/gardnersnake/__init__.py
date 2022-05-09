@@ -5,6 +5,7 @@
 
 # specific top-level package imports
 from .config.confighelper import ConfigurationHelper
+from .data.datamanager import DataManager
 from .fileops.yamlparser import read_yaml_extended_config
 
 # EOF
