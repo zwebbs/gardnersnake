@@ -11,7 +11,7 @@ from ..fileops.yamlparser import get_validated_from_schema
 from .schemas import SchemaMap
 from operator import getitem, itemgetter
 from functools import reduce
-
+import pandas as pd
 
 # class definitions
 # -----------------------------------------------------------------------------
@@ -29,6 +29,10 @@ class DataManager:
             schema=schema_map.get_schema(schema_type),
             name="Workflow Metadata", quietly=False
         )
+        # shared data attributes
+        self.shared_data = pd.DataFrame(self.metadata["shared_data"])
+
+        # rule data attributes
         self.get_rule_names = itemgetter("rule_name")
         self.rule_names = [self.get_rule_names(r) for r
                            in self._get_from_key_list(["rule_data"])
@@ -51,3 +55,8 @@ class DataManager:
         rule_idx = self.rule_names.index(rule_name)
         d = self.metadata["rule_data"][rule_idx]
         return self._get_from_key_list(key_list=key_list, d=d)
+
+    def get_shared_data(self, conditions, targets):
+        pass
+
+
