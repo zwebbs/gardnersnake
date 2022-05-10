@@ -29,35 +29,7 @@ META_SCHEMA_GARDNER_SEQ_BASIC = {
     "type": "object",
     "properties": {
         "shared_data": {
-            "type": "object",
-            "properties": {
-                "libraries": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "library_name": {"type": "string"},
-                            "runs": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "run_name": {"type": "string"},
-                                        "fastq1": {"type": "string"},
-                                        "fastq2": {"type": ["string", "null"]}
-                                    },
-                                    "additionalProperties": True,
-                                    "required": ["run_name", "fastq1"]
-                                }
-                            }
-                        },
-                        "additionalProperties": True,
-                        "required": ["library_name", "runs"]
-                    }
-                }
-            },
-            "required": ["libraries"],
-            "additionalProperties": False
+            "type": "array",
         },
         "rule_data": {
             "type": "array",

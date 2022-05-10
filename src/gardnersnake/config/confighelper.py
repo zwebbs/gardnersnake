@@ -47,8 +47,13 @@ class ConfigurationHelper:
 
     # define get_resources() external method for returning the resource
     # dictionary for a particular passed rule
-    def get_resources(self, rule_name):
-        return self._resources_getter(self._get_rule(rule_name))
+    def get_resources(self, rule_name, return_job_id=True):
+        if not return_job_id:
+            out = (self._resources_getter(self._get_rule(rule_name))).copy()
+            out.pop("job_id")
+            return out
+        else:
+            return self._resources_getter(self._get_rule(rule_name))
 
     # define get_parameters() external method for returning the parameter
     # dictionary for a particular passed rule

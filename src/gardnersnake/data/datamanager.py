@@ -11,7 +11,12 @@ from ..fileops.yamlparser import get_validated_from_schema
 from .schemas import SchemaMap
 from operator import getitem, itemgetter
 from functools import reduce
-import pandas as pd
+from pandas import DataFrame
+from numpy import nan
+
+# global definitions
+# -----------------------------------------------------------------------------
+NONE_TYPES = [None, nan]
 
 # class definitions
 # -----------------------------------------------------------------------------
@@ -30,7 +35,8 @@ class DataManager:
             name="Workflow Metadata", quietly=False
         )
         # shared data attributes
-        self.shared_data = pd.DataFrame(self.metadata["shared_data"])
+        # shared data, regardless of the schema should be coercible into a DF
+        self.shared_data = DataFrame(self.metadata["shared_data"])
 
         # rule data attributes
         self.get_rule_names = itemgetter("rule_name")
@@ -56,7 +62,28 @@ class DataManager:
         d = self.metadata["rule_data"][rule_idx]
         return self._get_from_key_list(key_list=key_list, d=d)
 
-    def get_shared_data(self, conditions, targets):
-        pass
-
+    # define get_shared_data() external method which extracts attributes
+    # from the shared data subsection of the metadata file. it relies on
+    # conditions, an ordered dictionary of key value pairs corresponding
+    # to sub-setting rules of the dictionary (currently only equality is supported)
+    # target represents the target attribute.
+    # TODO implement nonequality conditions for getting shared data
+    def get_shared_data(self, conditions, target):
+        dat = self.shared_data.copy()
+        for k, v in conditions.items():
+            dat = dat[dat[k] == v]
+            dat.reset_index(inplace=True)
+        if dat.shape[0] > 1: # if we have more than one valid response return a list
+            out = dat.loc[:, target].tolist()
+            out_fmtd = ["" if val in NONE_TYPES else val for val in out]  # replace np.nan with ""
+            if all([val in NONE_TYPES for val in out]):  # if all are np.nan return empty string
+                return ""
+            else:
+                return out_fmtd
+        else: # if we have only one valid response return that response
+            out = dat.at[0, target]
+            if out in NONE_TYPES:
+                return ""
+            else:
+                return out
 
