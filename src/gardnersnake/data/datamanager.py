@@ -77,13 +77,13 @@ class DataManager:
             out = dat.loc[:, target].tolist()
             out_fmtd = ["" if val in NONE_TYPES else val for val in out]  # replace np.nan with ""
             if all([val in NONE_TYPES for val in out]):  # if all are np.nan return empty string
-                return ""
+                return []
             else:
                 return out_fmtd
         else: # if we have only one valid response return that response
             out = dat.at[0, target]
             if out in NONE_TYPES:
-                return ""
+                return []
             else:
                 return out
 
