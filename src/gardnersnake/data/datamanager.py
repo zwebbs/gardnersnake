@@ -90,4 +90,4 @@ class DataManager:
     # define loj_shared_data() external method to perform left-outer-join on the table
     # of shared data. useful to collect outputs
     def loj_shared_data(self, to_add, on, indicator=True):
-        return merge(self.shared_data, to_add, on=on, indicator=indicator)
+        self.shared_data = self.shared_data.merge(to_add, how='left', on=on, indicator=indicator)
