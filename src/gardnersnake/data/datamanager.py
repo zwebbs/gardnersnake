@@ -11,7 +11,7 @@ from ..fileops.yamlparser import get_validated_from_schema
 from .schemas import SchemaMap
 from operator import getitem, itemgetter
 from functools import reduce
-from pandas import DataFrame
+from pandas import DataFrame, merge
 from numpy import nan
 
 # global definitions
@@ -87,3 +87,7 @@ class DataManager:
             else:
                 return out
 
+    # define loj_shared_data() external method to perform left-outer-join on the table
+    # of shared data. useful to collect outputs
+    def loj_shared_data(self, to_add, on, indicator=True):
+        return merge(self.shared_data, to_add, on=on, indicator=indicator)
