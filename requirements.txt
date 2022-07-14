@@ -1,7 +1,0 @@
-# File Name: requirements.txt
-# Created By: ZW
-# Created On: 2022-05-02
-# Purpose: outlines dependencies for gardnersnake use
-
-pyyaml==6.0
-jsonschema==4.4.0
