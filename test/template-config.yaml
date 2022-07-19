@@ -2,36 +2,26 @@
 # File Name: template-config.yaml
 # Created By: ZW
 # Created On: 2022-07-07
-# Purpose: Template configuration for the BOLT-LMM GWAS pipeline
+# Purpose: Template configuration for use with gardnersnake
 
-DOC_TYPE: "configuration"
-GLOBAL_CONFIG:
-  analysis_name: 'LV-ATAC-Seq'
-  working_directory: '`pwd`'
-  files: [
-    {
-      run: "run_A",
-      fq1: "readsA-1.fastq.gz",
-      fq2: "readsB-2.fastq.gz",
-      annos: {cell_type: "ctA"}
-    },
-    {
-      run: "run_A",
-      fq1: "readsA-1.fastq.gz",
-      fq2: "readsB-2.fastq.gz",
-      annos: {
-        cell_type: "ctA"
-      }
-    }
-  ]
-RULE_CONFIG: [
+DOC_TYPE: "GLOBAL_CONFIG"
+analysis_name: 'My-Analysis'
+working_directory: '/home/myusername/'
+files: [
   {
-    rule_name: "BWA_Index_Reference",
-    resources: {
-      walltime: "02:30:00",
-      nodes: 1,
-      processors_per_node: 4,
-      total_memory: 8000
-    }
+    run: "run_A",
+    fq1: "readsA-1.fastq.gz",
+    fq2: "readsB-2.fastq.gz",
+    annos: {cell_type: "ctA"}
   }
 ]
+---
+DOC_TYPE: "RULE_CONFIG"
+rule_name: "BWA_Index_Reference"
+resources: {
+  walltime: "02:30:00",
+  nodes: 1,
+  processors_per_node: 4,
+  total_memory: 8000
+}
+parameters: {}

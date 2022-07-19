@@ -13,14 +13,13 @@ from dataclasses import dataclass
 from operator import itemgetter
 from pathlib import Path
 from sys import stderr
-from typing import Union
+from typing import Dict, List, Optional, Union
 from yaml import load_all, SafeLoader
 from .exceptions import UserError
 
 # Type Definitions
 # -----------------------------------------------------------------------------
 PATH_T = Union[str, Path]  # defines a type for filepaths
-
 
 # Function Definitions
 # -----------------------------------------------------------------------------
@@ -104,6 +103,17 @@ class Dotdict(dict):
     __delattr__ = dict.__delitem__
 
 
+## Define a class <class GlobalParams> which adopts the dataclass schema
+## and holds the top-level parameters for a given snakemake workflow
+## Most importantly, the workflow files should be stored here
+@dataclass(frozen=True)
+class GlobalParams:
+    analysis_name: str  # holds the name of the rule for internal reference
+    working_directory: PATH_T  # holds the path for the specified workdir
+    files: Union[List[Dotdict], List]  # holds all of the specified workflow files
+    misc: Optional[Dotdict]  # holds any globals which are not the first three
+
+
 ## Define a class <class RuleParams> which adopts the dataclass schema
 ## and holds the rule-level parameters and resources for a given portion
 ## of the snakemake workflow, but importantly does not contain
@@ -112,7 +122,7 @@ class Dotdict(dict):
 class RuleParams:
     rule_name: str # holds the name of the rule for internal reference
     parameters: Dotdict # holds the dictionary of items for params
-    resources: Dotdict  # holds the dictionary of items for resources:
+    resources: Dotdict  # holds the dictionary of items for resources
 
 
 ## Define a class <class Configuration> that loads our yaml configuration
@@ -120,9 +130,78 @@ class RuleParams:
 class Configuration:
     def __init__(self, filepath: PATH_T):
         self.filepath = filepath
-        self.cfg = None
         self.global_params = None
         self.rule_params = None
+
+    # internal function that recursively turns nested dicts into dotdicts
+    def _recursive_convert_to_Dotdict(self, d: Dict):
+        d = Dotdict(d)
+        for key in d.keys():
+            if type(key) is dict:
+                d[key] = _recursive_convert_to_Dotdict(d[key])
+            else:
+                continue
+        return d
+
+    def load_global_params(self, globdict):
+        globkeys = globdict.keys()
+        reqd_keys = ("analysis_name", "working_directory", "files")
+
+        # check that all of the keys required in a global config are present
+        if any([reqd not in globkeys for reqd in reqd_keys]):
+            msg = f"""
+            At least one of {reqd_keys}, could not be
+            located in the passed global configuration.
+            please include all required fields.
+            (even if they are empty)
+            global config: {globdict}
+            """
+            raise YamlConfigLoadError(self.filepath, self.msg)
+
+        # if all of the required keys are present, build the config
+        misc = {k:v for k,v in globdict.items if k not in reqd_keys}
+        misc_dd = _recursive_convert_to_Dotdict(misc, Dotdict)
+        files_dd = _recursive_convert_to_Dotdict(files, Dotdict)
+        self.global_params = GlobalParams(
+            analysis_name=globdict["analysis_name"],
+            working_directory=globdict["working_directory"],
+            files=files_dd,
+            misc=misc_dd
+        )
+        # return None after assignment to self.global_p
+        return
+
+    def load_rule_params(self, ruledict):
+        if self.rule_params is None: self.rule_params = []
+        rulekeys = ruledict.keys()
+        reqd_keys = ["rule_name", "resources", "parameters"]
+
+        # check that all required keys are in the rule dict
+        if any([reqd not in rulekeys for reqd in reqd_keys]):
+            msg = f"""
+            At least one of {reqd_keys}, could not be
+            located in the passed rule configuration.
+            please include all required fields.
+            (even if they are empty)
+            global config: {ruledict}
+            """
+            raise YamlConfigLoadError(self.filepath, self.msg)
+
+        # TODO: build the rules config and append it to the list of rule configs,
+        # additionally, add the rule's name to the list of rulenames for easy lookup.
+
+
+
+    def load2(self):
+        with open(self.filepath, 'r') as yobj:
+            docs = load_all(yobj, SafeLoader)
+        for doc in docs:
+            if doc["DOC_TYPE"] == "GLOBAL_CONFIG": self.load_global_params(doc)
+            elif doc["DOC_TYPE"] == "RULE_CONFIG": self.load_rule_params(doc)
+            else:
+                # TODO: implement error for wrong DOC_TYPE
+                pass
+
 
     # define a loading method to read the yaml from self.filepath and
     # integrate it into a general configuration (self.cfg)
