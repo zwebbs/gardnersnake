@@ -132,6 +132,7 @@ class Configuration:
         self.filepath = filepath
         self.global_params = None
         self.rule_params = None
+        self._get_rule_name = itemgetter("rule_name")
 
     # internal function that recursively turns nested dicts into dotdicts
     def _recursive_convert_to_Dotdict(self, d: Dict):
@@ -187,8 +188,14 @@ class Configuration:
             """
             raise YamlConfigLoadError(self.filepath, self.msg)
 
-        # TODO: build the rules config and append it to the list of rule configs,
-        # additionally, add the rule's name to the list of rulenames for easy lookup.
+        # build the rules config and append it to the list of rule configs
+        rp = RuleParams(
+                rule_name=self._get_rule_name(ruledict),
+                parameters=_recursive_convert_to_Dotdict["parameters"],
+                resources=_recursive_convert_to_Dotdict["resources"]
+        )
+
+        self.rule_params.append(rp)
 
 
 
