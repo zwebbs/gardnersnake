@@ -142,8 +142,8 @@ class Configuration:
 
         # if all of the required keys are present, build the config
         misc = {k:v for k,v in globdict.items() if k not in reqd_keys}
-        misc_dd = self._recursive_convert_to_Dotdict(misc, Dotdict)
-        files_dd = self._recursive_convert_to_Dotdict(files, Dotdict)
+        misc_dd = self._recursive_convert_to_Dotdict(misc)
+        files_dd = self._recursive_convert_to_Dotdict(globdict["files"])
         self.global_params = GlobalParams(
             analysis_name=globdict["analysis_name"],
             working_directory=globdict["working_directory"],
