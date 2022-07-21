@@ -142,8 +142,8 @@ class Configuration:
 
         # if all of the required keys are present, build the config
         misc = {k:v for k,v in globdict.items() if k not in reqd_keys}
-        misc_dd = _recursive_convert_to_Dotdict(misc, Dotdict)
-        files_dd = _recursive_convert_to_Dotdict(files, Dotdict)
+        misc_dd = self._recursive_convert_to_Dotdict(misc, Dotdict)
+        files_dd = self._recursive_convert_to_Dotdict(files, Dotdict)
         self.global_params = GlobalParams(
             analysis_name=globdict["analysis_name"],
             working_directory=globdict["working_directory"],
@@ -185,8 +185,8 @@ class Configuration:
         # build the rules config and append it to the list of rule configs
         rp = RuleParams(
                 rule_name=ruledict["rule_name"],
-                parameters=_recursive_convert_to_Dotdict(ruledict["parameters"]),
-                resources=_recursive_convert_to_Dotdict(ruledict["resources"])
+                parameters=self._recursive_convert_to_Dotdict(ruledict["parameters"]),
+                resources=self._recursive_convert_to_Dotdict(ruledict["resources"])
              )
         self.rule_params = (*self.rule_params, rp)
         self.rule_names = (*self.rule_names, rp.rule_name)
