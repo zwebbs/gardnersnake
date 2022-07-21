@@ -196,21 +196,21 @@ class Configuration:
     def load(self):
         with open(self.filepath, 'r') as yobj:
             docs = load_all(yobj, SafeLoader)
-        for doc in docs:
-            if doc["DOC_TYPE"] == "GLOBAL_CONFIG": self._load_global_params(doc)
-            elif doc["DOC_TYPE"] == "RULE_CONFIG": self._load_rule_params(doc)
-            else:
-                f"""
-                Passed document is not of type {ALLOWED_DOC_TYPES}
-                The offending document printed below. Please ensure that
-                the `DOC_TYPE:` field is at the top level and is one of 
-                the allowed types. 
+            for doc in docs:
+                if doc["DOC_TYPE"] == "GLOBAL_CONFIG": self._load_global_params(doc)
+                elif doc["DOC_TYPE"] == "RULE_CONFIG": self._load_rule_params(doc)
+                else:
+                    f"""
+                    Passed document is not of type {ALLOWED_DOC_TYPES}
+                    The offending document printed below. Please ensure that
+                    the `DOC_TYPE:` field is at the top level and is one of 
+                    the allowed types. 
 
-                malformed document: 
-                {doc}
+                    malformed document: 
+                    {doc}
 
-                """
-                raise YamlConfigLoadError(msg)
+                    """
+                    raise YamlConfigLoadError(msg)
 
     # define a method to retrieve a set of rule parameters by first looking up
     # the position of the rule_name in the tuple of RuleParams objects.
