@@ -141,7 +141,7 @@ class Configuration:
             raise YamlConfigLoadError(self.filepath, self.msg)
 
         # if all of the required keys are present, build the config
-        misc = {k:v for k,v in globdict.items if k not in reqd_keys}
+        misc = {k:v for k,v in globdict.items() if k not in reqd_keys}
         misc_dd = _recursive_convert_to_Dotdict(misc, Dotdict)
         files_dd = _recursive_convert_to_Dotdict(files, Dotdict)
         self.global_params = GlobalParams(
