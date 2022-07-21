@@ -17,59 +17,17 @@ from typing import Dict, List, Optional, Union
 from yaml import load_all, SafeLoader
 from .exceptions import UserError
 
+
 # Type Definitions
 # -----------------------------------------------------------------------------
 PATH_T = Union[str, Path]  # defines a type for filepaths
 
-# Function Definitions
+# Global Definitions
 # -----------------------------------------------------------------------------
-
-## Define a series of functions <get_rulename>, <get_parameters>,
-## <get_resources> that access a dictionary with the keywords
-## rule_name, resources, parameters, respectively and throw warnings
-## if unable
-getrulename = itemgetter("rule_name")
-getresources = itemgetter("resources")
-getparameters = itemgetter("parameters")
-
-def get_rulename(object):
-    try: return getrulename(object)
-    except KeyError as ke:
-        errmsg = f"""
-        Warning. This rule configuration has no rule_name field
-        Without a name, this configuration will not be applied to the workflow
-        For debugging purposes, the module is printed below:
-        {object}
-        """
-        eprint(errmsg)
-        return None
-
-def get_resources(object):
-    try: return getresources(object)
-    except KeyError as ke:
-        errmsg = f"""
-        Warning. This rule configuration has no resources field.
-        Without specified resources, this rule will likely fail.
-        For debugging purposes, the module is printed below:
-        {object}
-        """
-        eprint(errmsg)
-        return None
-
-def get_parameters(object):
-    try: return getparameters(object)
-    except KeyError as ke:
-        errmsg = f"""
-        No parameters field found for rule configuration: {object}.
-        (This may or may not be intentional)
-        """
-        eprint(errmsg)
-        return None
-
+ALLOWED_DOC_TYPES = ("GLOBAL_CONFIG", "RULE_CONFIG")
 
 # Error and Exception Definitions
 # -----------------------------------------------------------------------------
-
 ## Define an Error for loading the configuration in the class
 ## <class Configuration> which is raised if none of the documents in
 ## the yaml file have the keyword `DOC_TYPE: "configuration"`
@@ -89,7 +47,21 @@ class YamlConfigLoadError(UserError):
         self._eprint(err_prelude)
         return self.message
 
+## Define an Error for retrieving rule data in the class <class Configuration>
+## which is raised when the user asks for data from a rule whose name is not 
+## catalogued in the attribute tuple Configuration.rule_names
+class YamlConfigRuleError(UserError):
+    def __init__(self,message, *args, **kw):
+        super(UserError, self).__init__(message, *args, **kw)
+        self.message= message
 
+    def __str__(self) -> str:
+        err_prelude = f"""
+        Error! Inappropriate access attemt on rule parameters
+        ------------------------------------------------------
+        """
+        self._eprint(err_prelude)
+        return self.message
 
 # Class Definitions
 # -----------------------------------------------------------------------------
@@ -110,7 +82,7 @@ class Dotdict(dict):
 class GlobalParams:
     analysis_name: str  # holds the name of the rule for internal reference
     working_directory: PATH_T  # holds the path for the specified workdir
-    files: Union[List[Dotdict], List]  # holds all of the specified workflow files
+    files: Dotdict  # holds all of the specified workflow files
     misc: Optional[Dotdict]  # holds any globals which are not the first three
 
 
@@ -132,19 +104,28 @@ class Configuration:
         self.filepath = filepath
         self.global_params = None
         self.rule_params = None
-        self._get_rule_name = itemgetter("rule_name")
+        self.rule_names = None
 
-    # internal function that recursively turns nested dicts into dotdicts
-    def _recursive_convert_to_Dotdict(self, d: Dict):
+    # internal function that recursively turns nested dicts into Dotdicts
+    # for '.' style attribute access
+    def _recursive_convert_to_Dotdict(self, d: Dict) -> Dotdict:
         d = Dotdict(d)
         for key in d.keys():
             if type(key) is dict:
-                d[key] = _recursive_convert_to_Dotdict(d[key])
+                d[key] = self._recursive_convert_to_Dotdict(d[key])
             else:
                 continue
         return d
 
-    def load_global_params(self, globdict):
+    # internal method that loads global params from a config document with
+    # the DOC_TYPE: GLOBAL_CONFIG tag. This method requires that global 
+    # config documents have three mandatory sections: 
+    # analysis_name -- A name given to the overall workflow instance
+    # working_directory -- the name of the directory from which the workflow instance
+    #   should be run.
+    # files -- dictionary containing the files used in the workflow.
+    # any other sections will be automatically packed into a field called misc
+    def _load_global_params(self, globdict):
         globkeys = globdict.keys()
         reqd_keys = ("analysis_name", "working_directory", "files")
 
@@ -171,11 +152,24 @@ class Configuration:
         )
         # return None after assignment to self.global_p
         return
-
-    def load_rule_params(self, ruledict):
-        if self.rule_params is None: self.rule_params = []
+    
+    # internal method that loads rule params from a config document with
+    # the DOC_TYPE: RULE_CONFIG tag. This method requires that rule
+    # config documents have three mandatory sections: 
+    # rule_name -- A name given to the rule (hopefully consistent with the Snakefile)
+    # parameters -- dictionary containing non-file arguments to be used with the rule
+    #   (typically those arguments which will be unpacked in the params: section of a 
+    #    rule definition)
+    # resources -- dictionary containing the resource specification for the rule in terms of
+    # HPC compute resources. this is often helpful in external wrappers that make calls
+    # to a job scheduler.
+    # ** There are no additional fields considered or loaded in rule configs.
+    def _load_rule_params(self, ruledict):
+        if self.rule_params is None:
+            self.rule_params = ()
+            self.rule_names = ()
         rulekeys = ruledict.keys()
-        reqd_keys = ["rule_name", "resources", "parameters"]
+        reqd_keys = ("rule_name", "resources", "parameters")
 
         # check that all required keys are in the rule dict
         if any([reqd not in rulekeys for reqd in reqd_keys]):
@@ -190,81 +184,43 @@ class Configuration:
 
         # build the rules config and append it to the list of rule configs
         rp = RuleParams(
-                rule_name=self._get_rule_name(ruledict),
-                parameters=_recursive_convert_to_Dotdict["parameters"],
-                resources=_recursive_convert_to_Dotdict["resources"]
-        )
-
-        self.rule_params.append(rp)
-
-
-
-    def load2(self):
-        with open(self.filepath, 'r') as yobj:
-            docs = load_all(yobj, SafeLoader)
-        for doc in docs:
-            if doc["DOC_TYPE"] == "GLOBAL_CONFIG": self.load_global_params(doc)
-            elif doc["DOC_TYPE"] == "RULE_CONFIG": self.load_rule_params(doc)
-            else:
-                # TODO: implement error for wrong DOC_TYPE
-                pass
-
+                rule_name=ruledict["rule_name"],
+                parameters=_recursive_convert_to_Dotdict(ruledict["parameters"]),
+                resources=_recursive_convert_to_Dotdict(ruledict["resources"])
+             )
+        self.rule_params = (*self.rule_params, rp)
+        self.rule_names = (*self.rule_names, rp.rule_name)
 
     # define a loading method to read the yaml from self.filepath and
-    # integrate it into a general configuration (self.cfg)
+    # integrate it into the Configuration class object.
     def load(self):
         with open(self.filepath, 'r') as yobj:
             docs = load_all(yobj, SafeLoader)
-            for doc in docs:
-                if doc["DOC_TYPE"] == "configuration":
-                    self.cfg = doc
-                    try:
-                        self.gobal_params = self.cfg["GLOBAL_CONFIG"]
-                    except KeyError as ke:
-                        errmsg = """
-                        Warning. Configuration document has no apparent Global
-                        config parameters. If you need global parameters
-                        please specify them under the header GLOBAL_CONFIG:
-                        """
-                        eprint(errmsg)
-                    try:
-                        rule_configs = self.cfg["RULE_CONFIG"]
-                        ruleparams = Dotdict({})
-                        for rule in rule_configs:
-                            name = get_rulename(rule)
-                            resources = get_resources(rule)
-                            parameters = get_parameters(rule)
+        for doc in docs:
+            if doc["DOC_TYPE"] == "GLOBAL_CONFIG": self._load_global_params(doc)
+            elif doc["DOC_TYPE"] == "RULE_CONFIG": self._load_rule_params(doc)
+            else:
+                f"""
+                Passed document is not of type {ALLOWED_DOC_TYPES}
+                The offending document printed below. Please ensure that
+                the `DOC_TYPE:` field is at the top level and is one of 
+                the allowed types. 
 
-                            if type(resources) is dict:
-                                resources = Dotdict(resources)
-                            if type(parameters) is dict:
-                                parameters = Dotdict(parameters)
+                malformed document: 
+                {doc}
 
-                            ruleparams[name] = RuleParams(
-                                rule_name=name,
-                                resources=resources,
-                                parameters=parameters
-                            )
-                        self.rule_params = ruleparams
-
-                    except KeyError as ke:
-                        errmsg = """
-                        Warning. Configuration document has no apparent Rule
-                        config parameters. If you need rule parameters please
-                        specify them under the header RULE_CONFIG: [...] as
-                        a list of dictionary type objects. see template for
-                        details.
-                        """
-                        eprint(errmsg)
-
-                    # break when we find a configuration (i.e. look no further)
-                    break
-
-            if not self.cfg:  # if there is no configuration in the yaml docs
-                errmsg = """
-                Please ensure that a configuration document is present in the
-                yaml file and that is appropriately headed by
-                DOC_TYPE: "configuration"
                 """
-                raise YamlConfigLoadError(self.filepath, errmsg)
+                raise YamlConfigLoadError(msg)
+
+    # define a method to retrieve a set of rule parameters by first looking up
+    # the position of the rule_name in the tuple of RuleParams objects.
+    def get_rule_params(self, rulename):
+        try:
+            rule_idx = self.rule_names.index(rulename)
+            return self.rule_params[rule_idx]
+        except ValueError as ve:
+            msg = f"""
+            Could not find rule with name: {rulename}
+            """
+            raise YamlConfigRuleError(msg) from ve
 
