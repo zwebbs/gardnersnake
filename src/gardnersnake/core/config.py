@@ -110,9 +110,9 @@ class Configuration:
     # for '.' style attribute access
     def _recursive_convert_to_Dotdict(self, d: Dict) -> Dotdict:
         d = Dotdict(d)
-        for key in d.keys():
-            if type(key) is dict:
-                d[key] = self._recursive_convert_to_Dotdict(d[key])
+        for key,value in d.items():
+            if type(value) is dict:
+                d[key] = self._recursive_convert_to_Dotdict(value)
             else:
                 continue
         return d
@@ -138,7 +138,7 @@ class Configuration:
             (even if they are empty)
             global config: {globdict}
             """
-            raise YamlConfigLoadError(self.filepath, self.msg)
+            raise YamlConfigLoadError(self.filepath,msg)
 
         # if all of the required keys are present, build the config
         misc = {k:v for k,v in globdict.items() if k not in reqd_keys}
